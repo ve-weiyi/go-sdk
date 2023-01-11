@@ -4,7 +4,6 @@ import (
 	"github.com/ve-weiyi/go-sdk/utils/glog/zaplog"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"log"
 	"sync"
 	"time"
 )
@@ -13,7 +12,6 @@ var _glogger *Glogger
 
 // 默认调用
 func init() {
-	log.SetFlags(log.LstdFlags | log.Llongfile)
 	//包级log函数 skip->2, glog.log函数 skip->1
 	_glogger = NewGlogger(2, zaplog.GetDefaultConfig())
 }

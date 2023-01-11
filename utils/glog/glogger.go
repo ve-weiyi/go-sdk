@@ -1,14 +1,13 @@
+// Copyright © 2015-2018 Anker Innovations Technology Limited All Rights Reserved.
 package glog
 
 import (
-	"fmt"
-	"github.com/ve-weiyi/go-sdk/utils/jsonconv"
+	"encoding/json"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"sync"
 	"time"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 // go使用zap + lumberjack重构项目的日志系统 https://blog.csdn.net/weixin_52000204/article/details/126651319
@@ -80,24 +79,45 @@ func (mlog *Glogger) Debug(v ...interface{}) {
 	mlog.sugar.Debug(v...)
 }
 
-func (mlog *Glogger) Errorw(format string, v ...interface{}) {
+// print 风格
+func (mlog *Glogger) Errorf(template string, args ...interface{}) {
 	mlog.checkRotate()
-	mlog.sugar.Errorw(format, v...)
+	mlog.sugar.Errorf(template, args...)
 }
 
-func (mlog *Glogger) Warnw(format string, v ...interface{}) {
+func (mlog *Glogger) Warnf(template string, args ...interface{}) {
 	mlog.checkRotate()
-	mlog.sugar.Warnw(format, v...)
+	mlog.sugar.Warnf(template, args...)
 }
 
-func (mlog *Glogger) Infow(format string, v ...interface{}) {
+func (mlog *Glogger) Infof(template string, args ...interface{}) {
 	mlog.checkRotate()
-	mlog.sugar.Infow(format, v...)
+	mlog.sugar.Infof(template, args...)
 }
 
-func (mlog *Glogger) Debugw(format string, v ...interface{}) {
+func (mlog *Glogger) Debugf(template string, args ...interface{}) {
 	mlog.checkRotate()
-	mlog.sugar.Debugw(format, v...)
+	mlog.sugar.Debugf(template, args...)
+}
+
+func (mlog *Glogger) Errorw(msg string, keysAndValues ...interface{}) {
+	mlog.checkRotate()
+	mlog.sugar.Errorw(msg, keysAndValues...)
+}
+
+func (mlog *Glogger) Warnw(msg string, keysAndValues ...interface{}) {
+	mlog.checkRotate()
+	mlog.sugar.Warnw(msg, keysAndValues...)
+}
+
+func (mlog *Glogger) Infow(msg string, keysAndValues ...interface{}) {
+	mlog.checkRotate()
+	mlog.sugar.Infow(msg, keysAndValues...)
+}
+
+func (mlog *Glogger) Debugw(msg string, keysAndValues ...interface{}) {
+	mlog.checkRotate()
+	mlog.sugar.Debugw(msg, keysAndValues...)
 }
 
 func (mlog *Glogger) Print(v ...interface{}) {
@@ -105,9 +125,9 @@ func (mlog *Glogger) Print(v ...interface{}) {
 	mlog.sugar.Info(v...)
 }
 
-func (mlog *Glogger) Printf(format string, v ...interface{}) {
+func (mlog *Glogger) Printf(template string, args ...interface{}) {
 	mlog.checkRotate()
-	mlog.sugar.Info(fmt.Sprintf(format, v...))
+	mlog.sugar.Infof(template, args...)
 }
 
 func (mlog *Glogger) GetUnderlyingLogger() *zap.Logger {
@@ -116,5 +136,6 @@ func (mlog *Glogger) GetUnderlyingLogger() *zap.Logger {
 
 func (mlog *Glogger) Json(v ...interface{}) {
 	mlog.checkRotate()
-	mlog.sugar.Info(jsonconv.ObjectToJson(v))
+	bytes, _ := json.Marshal(v)
+	mlog.sugar.Info(string(bytes))
 }

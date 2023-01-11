@@ -1,55 +1,57 @@
 package response
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/ve-weiyi/go-sdk/utils/jsonconv"
+	"net/http"
 )
 
 type Response struct {
-	Code int         `json:"code"`
-	Data interface{} `json:"data"`
-	Msg  string      `json:"msg"`
+	Code    int         `json:"code" example:"200"`
+	Message string      `json:"message" example:"success"`
+	Data    interface{} `json:"data"`
 }
 
 const (
-	ERROR   = 7
+	ERROR   = 504
 	SUCCESS = 0
 )
 
-func Result(c *gin.Context, code int, data interface{}, msg string) {
-	// 开始时间
-	c.JSON(http.StatusOK, Response{
+func Result(c *gin.Context, code int, msg string, data interface{}) {
+	obj := Response{
 		code,
-		data,
 		msg,
-	})
+		data,
+	}
+
+	// 开始时间
+	c.String(http.StatusOK, jsonconv.ObjectToJsonSnake(obj))
 }
 
 func Ok(c *gin.Context) {
-	Result(c, SUCCESS, map[string]interface{}{}, "操作成功")
+	Result(c, SUCCESS, "操作成功", map[string]interface{}{})
 }
 
 func OkWithMessage(c *gin.Context, message string) {
-	Result(c, SUCCESS, map[string]interface{}{}, message)
+	Result(c, SUCCESS, message, map[string]interface{}{})
 }
 
 func OkWithData(c *gin.Context, data interface{}) {
-	Result(c, SUCCESS, data, "查询成功")
+	Result(c, SUCCESS, "查询成功", data)
 }
 
 func OkWithDetailed(c *gin.Context, data interface{}, message string) {
-	Result(c, SUCCESS, data, message)
+	Result(c, SUCCESS, message, data)
 }
 
 func Fail(c *gin.Context) {
-	Result(c, ERROR, map[string]interface{}{}, "操作失败")
+	Result(c, ERROR, "操作失败", map[string]interface{}{})
 }
 
 func FailWithMessage(c *gin.Context, message string) {
-	Result(c, ERROR, map[string]interface{}{}, message)
+	Result(c, ERROR, message, map[string]interface{}{})
 }
 
 func FailWithDetailed(c *gin.Context, data interface{}, message string) {
-	Result(c, ERROR, data, message)
+	Result(c, ERROR, message, data)
 }
