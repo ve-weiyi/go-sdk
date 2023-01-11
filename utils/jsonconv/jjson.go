@@ -4,9 +4,29 @@ import (
 	"encoding/json"
 )
 
-// 转换为json
+// 默认json
 func ObjectToJson(data any) string {
 	bytes, err := json.Marshal(data)
+	if err != nil {
+		return ""
+	}
+
+	return string(bytes)
+}
+
+// 转换行结构json
+func ObjectToJsonIndent(data any) string {
+	bytes, err := json.MarshalIndent(data, "", " ")
+	if err != nil {
+		return ""
+	}
+
+	return string(bytes)
+}
+
+// 转下划线json
+func ObjectToJsonSnake(data any) string {
+	bytes, err := json.Marshal(JsonSnakeCase{Value: data})
 	if err != nil {
 		return ""
 	}
