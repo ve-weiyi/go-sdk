@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// 转换为json
 func ObjectToJson(data any) string {
 	bytes, err := json.Marshal(data)
 	if err != nil {
