@@ -1,4 +1,4 @@
-package utils
+package verify
 
 import (
 	"errors"
@@ -38,11 +38,11 @@ func NotEmpty() string {
 	return "notEmpty"
 }
 
-// @author: [zooqkl](https://github.com/zooqkl)
-// @function: RegexpMatch
-// @description: 正则校验 校验输入项是否满足正则表达式
-// @param:  rule string
-// @return: string
+//	@author:		[zooqkl](https://github.com/zooqkl)
+//	@function:		RegexpMatch
+//	@description:	正则校验 校验输入项是否满足正则表达式
+//	@param:			rule string
+//	@return:		string
 
 func RegexpMatch(rule string) string {
 	return "regexp=" + rule

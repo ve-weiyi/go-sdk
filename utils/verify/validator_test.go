@@ -1,8 +1,8 @@
-package utils
+package verify
 
 import (
-	"github.com/ve-weiyi/go-sdk/model/common/request"
 	"testing"
+	"ve-admin-blog/server/app/model/common/request"
 )
 
 type PageInfoTest struct {

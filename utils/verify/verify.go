@@ -1,4 +1,4 @@
-package utils
+package verify
 
 var (
 	IdVerify               = Rules{"ID": []string{NotEmpty()}}
