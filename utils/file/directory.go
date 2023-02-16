@@ -2,10 +2,8 @@ package file
 
 import (
 	"errors"
+	"fmt"
 	"os"
-	"ve-admin-blog/server/global"
-
-	"go.uber.org/zap"
 )
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -41,9 +39,9 @@ func CreateDir(dirs ...string) (err error) {
 			return err
 		}
 		if !exist {
-			global.GVA_LOG.Debug("create directory" + v)
+			fmt.Println("create directory" + v)
 			if err := os.MkdirAll(v, os.ModePerm); err != nil {
-				global.GVA_LOG.Error("create directory"+v, zap.Any(" error:", err))
+				fmt.Println("create directory" + v)
 				return err
 			}
 		}

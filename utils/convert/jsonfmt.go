@@ -1,4 +1,4 @@
-package jsonconv
+package convert
 
 import jsoniter "github.com/json-iterator/go"
 
