@@ -18,6 +18,12 @@ type WriterConfig struct {
 	//LogInConsole bool   //是否打印控制台
 }
 
+// GetFileWriter 按时间分割日志文件 runtime/log/2022-11
+// rotate库于2022.11.9开始不再更新
+func GetFileWriter(cfg WriterConfig, level string) *rotatelogs.RotateLogs {
+	return GetTimeWriter(cfg, level)
+}
+
 // GetTimeWriter 按时间分割日志文件 runtime/log/2022-11
 // rotate库于2022.11.9开始不再更新
 func GetTimeWriter(cfg WriterConfig, level string) *rotatelogs.RotateLogs {

@@ -16,7 +16,7 @@ type FormatConfig struct {
 }
 
 // 通过config获取
-func GetConfigEncoder(cfg FormatConfig) zapcore.Encoder {
+func GetJsonEncoder(cfg FormatConfig) zapcore.Encoder {
 	// 获取一个指定的的EncoderConfig，进行自定义
 	//encodeConfig := zap.NewProductionEncoderConfig()
 	encodeConfig := zapcore.EncoderConfig{
@@ -28,17 +28,13 @@ func GetConfigEncoder(cfg FormatConfig) zapcore.Encoder {
 		//FunctionKey:    "func",
 		StacktraceKey:  cfg.StacktraceKey,
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    cfg.EncodeLevel,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
 		EncodeTime:     cfg.PrefixTimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.FullCallerEncoder,
 	}
-
-	if cfg.Format == "json" {
-		//json格式
-		return zapcore.NewJSONEncoder(encodeConfig)
-	}
-	return zapcore.NewConsoleEncoder(encodeConfig)
+	//json格式
+	return zapcore.NewJSONEncoder(encodeConfig)
 }
 
 // 控制台日志格式，大写带颜色
@@ -66,12 +62,4 @@ func GetConsoleEncoder(cfg FormatConfig) zapcore.Encoder {
 // PrefixTimeEncoder 自定义带前缀日志输出时间格式
 func (m FormatConfig) PrefixTimeEncoder(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
 	encoder.AppendString(m.Prefix + t.Format("2006/01/02-15:04:05.000"))
-}
-
-func (m FormatConfig) timeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-	enc.AppendString(t.Format("2006-01-02 15:04:05"))
-}
-
-func (m FormatConfig) timeUnixNano(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-	enc.AppendInt64(t.UnixNano() / 1e6)
 }

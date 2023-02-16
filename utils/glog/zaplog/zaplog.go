@@ -55,15 +55,16 @@ func GetEncoderCore(cfg LogConfig) []zapcore.Core {
 	//使用不同后缀收集日志
 	lvCores := make([]zapcore.Core, 0, 7)
 	for level := cfg.TransportLevel(); level <= zapcore.FatalLevel; level++ {
-		encoder := GetConfigEncoder(cfgFormat)
-		writer := zapcore.AddSync(GetTimeWriter(cfgWriter, level.String()))
+		encoder := GetJsonEncoder(cfgFormat)
+		writer := zapcore.AddSync(GetFileWriter(cfgWriter, level.String()))
 		lvCores = append(lvCores, zapcore.NewCore(encoder, writer, GetLevelPriority(level)))
 	}
 
 	if cfg.LogInConsole {
 		//控制台打印、console格式
-		consoleEncoder := GetConsoleEncoder(cfgFormat)
-		lvCores = append(lvCores, zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stderr), cfg.TransportLevel()))
+		encoder := GetConsoleEncoder(cfgFormat)
+		writer := zapcore.AddSync(os.Stderr)
+		lvCores = append(lvCores, zapcore.NewCore(encoder, writer, cfg.TransportLevel()))
 	}
 
 	return lvCores
@@ -75,7 +76,7 @@ func GetCoreSimple(cfg LogConfig) []zapcore.Core {
 	cfgFormat := cfg.GetEncoderConfig()
 	cfgWriter := cfg.GetWriterConfig()
 	//文件打印、json格式
-	jsonEncoder := GetConfigEncoder(cfgFormat)
+	jsonEncoder := GetJsonEncoder(cfgFormat)
 	//控制台打印、console格式
 	consoleEncoder := GetConsoleEncoder(cfgFormat)
 
@@ -86,9 +87,9 @@ func GetCoreSimple(cfg LogConfig) []zapcore.Core {
 
 	cores := []zapcore.Core{
 		// 保活日志
-		zapcore.NewCore(jsonEncoder, zapcore.AddSync(GetTimeWriter(cfgWriter, "info")), saveLv),
+		zapcore.NewCore(jsonEncoder, zapcore.AddSync(GetFileWriter(cfgWriter, "info")), saveLv),
 		// 错误日志:输入到文件中，使用json格式，无颜色
-		zapcore.NewCore(jsonEncoder, zapcore.AddSync(GetTimeWriter(cfgWriter, "error")), errorLv),
+		zapcore.NewCore(jsonEncoder, zapcore.AddSync(GetFileWriter(cfgWriter, "error")), errorLv),
 
 		zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stderr), zapcore.DebugLevel),
 	}
