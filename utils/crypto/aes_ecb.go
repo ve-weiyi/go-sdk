@@ -2,37 +2,44 @@ package crypto
 
 import (
 	"crypto/aes"
+	"errors"
 )
 
-func AesEncryptECB(origData []byte, key []byte) (encrypted []byte) {
-	cipher, _ := aes.NewCipher(key)
-	length := (len(origData) + aes.BlockSize) / aes.BlockSize
-	plain := make([]byte, length*aes.BlockSize)
-	copy(plain, origData)
-	pad := byte(len(plain) - len(origData))
-	for i := len(origData); i < len(plain); i++ {
-		plain[i] = pad
-	}
-	encrypted = make([]byte, len(plain))
+//golang crypt包的AES加密函数的使用 https://www.jianshu.com/p/47e8c137ecd4
+
+var ErrorAESEncrypt = errors.New("加密字符串错误！")
+
+/**
+1、Electronic Code Book(ECB) 电子密码本模式
+ECB模式是最早采用和最简单的模式，相同的明文将永远加密成相同的密文。无初始向量，容易受到密码本重放攻击，一般情况下很少用.
+它将加密的数据分成若干组，每组的大小跟加密密钥长度相同，然后每组都用相同的密钥进行加密。
+*/
+
+func AesEncryptECB(plaintext []byte, key []byte) (ciphertext []byte) {
+	// AES加密算法的加密块必须是16字节(128bit)，所以不足部分需要填充，常用的填充算法是PKCS7。
+	plain := pkcs7Padding(plaintext, aes.BlockSize)
+	// 创建密文接收区
+	ciphertext = make([]byte, len(plain))
+
+	block, _ := aes.NewCipher(key)
 	// 分组分块加密
-	for bs, be := 0, cipher.BlockSize(); bs <= len(origData); bs, be = bs+cipher.BlockSize(), be+cipher.BlockSize() {
-		cipher.Encrypt(encrypted[bs:be], plain[bs:be])
+	for bs, be := 0, block.BlockSize(); bs <= len(plaintext); bs, be = bs+block.BlockSize(), be+block.BlockSize() {
+		block.Encrypt(ciphertext[bs:be], plain[bs:be])
 	}
 
-	return encrypted
+	return ciphertext
 }
-func AesDecryptECB(encrypted []byte, key []byte) (decrypted []byte) {
-	cipher, _ := aes.NewCipher(key)
-	decrypted = make([]byte, len(encrypted))
-	//
-	for bs, be := 0, cipher.BlockSize(); bs < len(encrypted); bs, be = bs+cipher.BlockSize(), be+cipher.BlockSize() {
-		cipher.Decrypt(decrypted[bs:be], encrypted[bs:be])
+
+func AesDecryptECB(ciphertext []byte, key []byte) (plaintext []byte) {
+	// 创建明文接收区
+	plaintext = make([]byte, len(ciphertext))
+
+	block, _ := aes.NewCipher(key)
+	// 分组分块解密
+	for bs, be := 0, block.BlockSize(); bs < len(ciphertext); bs, be = bs+block.BlockSize(), be+block.BlockSize() {
+		block.Decrypt(plaintext[bs:be], ciphertext[bs:be])
 	}
 
-	trim := 0
-	if len(decrypted) > 0 {
-		trim = len(decrypted) - int(decrypted[len(decrypted)-1])
-	}
-
-	return decrypted[:trim]
+	plaintext = pkcs7UnPadding(plaintext)
+	return plaintext
 }
