@@ -17,14 +17,14 @@ ECB模式是最早采用和最简单的模式，相同的明文将永远加密�
 
 func AesEncryptECB(plaintext []byte, key []byte) (ciphertext []byte) {
 	// AES加密算法的加密块必须是16字节(128bit)，所以不足部分需要填充，常用的填充算法是PKCS7。
-	plain := pkcs7Padding(plaintext, aes.BlockSize)
+	plaintext = pkcs7Padding(plaintext, aes.BlockSize)
 	// 创建密文接收区
-	ciphertext = make([]byte, len(plain))
+	ciphertext = make([]byte, len(plaintext))
 
 	block, _ := aes.NewCipher(key)
 	// 分组分块加密
-	for bs, be := 0, block.BlockSize(); bs <= len(plaintext); bs, be = bs+block.BlockSize(), be+block.BlockSize() {
-		block.Encrypt(ciphertext[bs:be], plain[bs:be])
+	for bs, be := 0, block.BlockSize(); bs < len(plaintext); bs, be = bs+block.BlockSize(), be+block.BlockSize() {
+		block.Encrypt(ciphertext[bs:be], plaintext[bs:be])
 	}
 
 	return ciphertext
