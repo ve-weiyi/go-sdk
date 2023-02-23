@@ -2,7 +2,7 @@ package crypto
 
 import (
 	"encoding/base64"
-	"encoding/hex"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"testing"
@@ -37,32 +37,25 @@ func TestBcrypt(t *testing.T) {
 
 func TestMd5(t *testing.T) {
 	//1bdf247646854ad6d841ba6b0cd376fe
-	//log.Println(Md5v(plaintext, "123"))
-
-	for i := 0; i < 1000000; i++ {
-		Md5v(plaintext, Bit512)
-	}
+	log.Println(Md5v(plaintext, "123"))
 }
 
 func TestSha256(t *testing.T) {
-	//log.Println(Sha256v(plaintext, "123"))
+	log.Println(Sha256v(plaintext, "123"))
 
-	for i := 0; i < 1000000; i++ {
-		Sha256v(Bit512, Bit512)
-	}
 }
 
 func BenchmarkMd5v(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		// 494.4 ns/op
-		Md5v(Bit1024, Bit512)
+		Md5v(plaintext, "123")
 	}
 }
 
 func BenchmarkSha256v(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		// 249.4 ns/op
-		Sha256v(Bit1024, Bit512)
+		Sha256v(plaintext, "123")
 	}
 }
 
@@ -73,58 +66,65 @@ func BenchmarkBcrypt(b *testing.B) {
 	}
 }
 
-var key = []byte("1234567.1234567.") // 加密的密钥
-
-func BenchmarkAES(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		// 456.7 ns/op    2017 ns/op  15062 ns/op
-		// 473.0 ns/op    2130 ns/op   16414 ns/op
-		// 526.8 ns/op 	  2388 ns/op	18430 ns/op
-		//encrypted := AesEncryptCBC([]byte(Bit1024), key)
-		encrypted := AesEncryptCBC([]byte(Bit1024), key)
-		AesDecryptCBC(encrypted, key)
-	}
-}
-
 func BitsX10(src string) string {
 	return src + src + src + src + src + src + src + src + src + src
 }
 
-func Test_B_1(t *testing.T) {
-	plaintext := []byte("460154561234") // 待加密的数据
-	key := []byte("9876787656785679")   // 加密的密钥
-	log.Println("原文：", string(plaintext))
+func TestBase64(t *testing.T) {
+	s := "{  }"
 
-	log.Println("------------------ CBC模式 --------------------")
-	encrypted := AesEncryptCBC(plaintext, key)
-	log.Println("密文(hex)：", hex.EncodeToString(encrypted))
-	log.Println("密文(base64)：", base64.StdEncoding.EncodeToString(encrypted))
-	decrypted := AesDecryptCBC(encrypted, key)
-	log.Println("解密结果：", string(decrypted))
+	encodeStd := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	//base64.StdEncoding.EncodeToString([]byte(s))
+	s64 := base64.NewEncoding(encodeStd).EncodeToString([]byte(s))
+	fmt.Println("base64.NewEncoding(encodeStd).EncodeToString")
+	fmt.Println(s64)
+
+	s64_std, _ := base64.StdEncoding.DecodeString(s64)
+	fmt.Println("base64.StdEncoding.EncodeToString")
+	fmt.Println(string(s64_std))
 }
 
-func Test_B_2(t *testing.T) {
-	plaintext := []byte("460154561234") // 待加密的数据
-	key := []byte("9876787656785679")   // 加密的密钥
-	log.Println("原文：", string(plaintext))
-
-	log.Println("------------------ ECB模式 --------------------")
-	encrypted := AesEncryptECB(plaintext, key)
-	log.Println("密文(hex)：", hex.EncodeToString(encrypted))
-	log.Println("密文(base64)：", base64.StdEncoding.EncodeToString(encrypted))
-	decrypted := AesDecryptECB(encrypted, key)
-	log.Println("解密结果：", string(decrypted))
+func BenchmarkECC(b *testing.B) {
+	prvKey, err := genPrivateKey()
+	if err != nil {
+		fmt.Println(err)
+	}
+	pubKey := prvKey.PublicKey
+	plain := "我们没什么不同"
+	for i := 0; i < b.N; i++ {
+		//     cost=102245 ns/op --0.0001s
+		cipher, _ := ECCEncrypt(plain, &pubKey)
+		plain, err = ECCDecrypt(cipher, prvKey)
+	}
 }
 
-func Test_B_3(t *testing.T) {
-	plaintext := []byte("460154561234") // 待加密的数据
-	key := []byte("9876787656785679")   // 加密的密钥
-	log.Println("原文：", string(plaintext))
-
-	log.Println("------------------ CFB模式 --------------------")
-	encrypted := AesEncryptCFB(plaintext, key)
-	log.Println("密文(hex)：", hex.EncodeToString(encrypted))
-	log.Println("密文(base64)：", base64.StdEncoding.EncodeToString(encrypted))
-	decrypted := AesDecryptCFB(encrypted, key)
-	log.Println("解密结果：", string(decrypted))
+func TestECC(t *testing.T) {
+	prvKey, err := genPrivateKey()
+	if err != nil {
+		fmt.Println(err)
+	}
+	pubKey := prvKey.PublicKey
+	plain := Bit1024
+	for i := 0; i < 10000; i++ {
+		//     cost=102245 ns/op --0.0001s
+		cipher, _ := ECCEncrypt(plain, &pubKey)
+		plain, err = ECCDecrypt(cipher, prvKey)
+	}
+	//prvKey, err := genPrivateKey()
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//pubKey := prvKey.PublicKey
+	//plain := "我们没什么不同"
+	//fmt.Printf("明文：%s\n", plain)
+	//cipher, err := ECCEncrypt(plain, &pubKey)
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//fmt.Printf("密文：%v\n", cipher)
+	//plain, err = ECCDecrypt(cipher, prvKey)
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//fmt.Printf("明文：%s\n", plain)
 }
