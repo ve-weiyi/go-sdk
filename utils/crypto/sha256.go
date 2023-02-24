@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// hex.EncodeToString(wikiSha256)==Sha256v
 	encrypted := wikiSha256([]byte("学习区块链要记得记笔记"))
 	fmt.Println(hex.EncodeToString(encrypted))
 }

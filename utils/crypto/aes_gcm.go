@@ -35,12 +35,6 @@ func AESEncryptGCM(plaintext string, key string) (ciphertext, noncetext string) 
 	return
 }
 
-/*
-AES GDCM 解码
-key:解密key
-ciphertext:加密返回的串
-plaintext：解密后的字符串
-*/
 func AESDecryptGCM(ciphertext, key, noncetext string) (plaintext string) {
 	cipherbyte, _ := hex.DecodeString(ciphertext)
 	nonce, _ := hex.DecodeString(noncetext)

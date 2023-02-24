@@ -23,16 +23,16 @@ func TestBcrypt(t *testing.T) {
 	//$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
 	//\__/\/ \____________________/\_____________________________/
 	//Alg Cost      Salt 128bits               Hash 192bits
-	//ciphertext = BcryptHash(plaintext)
-	//log.Println(BcryptHash(Bit512))
-	//log.Println(BcryptCheck(plaintext, ciphertext))
-	//log.Println(plainxtext)
-	//log.Println(ciphertext)
+	ciphertext = BcryptHash(plaintext)
+	log.Println(BcryptHash(Bit512))
+	log.Println(BcryptCheck(plaintext, ciphertext))
+	log.Println(plaintext)
+	log.Println(ciphertext)
 
 	//6.60s
-	for i := 0; i < 10; i++ {
-		bcrypt.GenerateFromPassword([]byte(Bit256), bcrypt.DefaultCost)
-	}
+	//for i := 0; i < 10; i++ {
+	//	bcrypt.GenerateFromPassword([]byte(Bit256), bcrypt.DefaultCost)
+	//}
 }
 
 func TestMd5(t *testing.T) {
