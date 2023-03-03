@@ -16,7 +16,7 @@ func init() {
 	_glogger = NewGlogger(2, zaplog.GetDefaultConfig())
 }
 
-func ReplaceZapGlobals(cfgs ...zaplog.LogConfig) {
+func ReplaceZapGlobals(cfgs ...zaplog.ZapConfig) {
 	if len(cfgs) > 0 {
 		zap.ReplaceGlobals(NewGlogger(0, cfgs[0]).Logger())
 		return
@@ -25,7 +25,7 @@ func ReplaceZapGlobals(cfgs ...zaplog.LogConfig) {
 	zap.ReplaceGlobals(zaplog.GetDefaultZapLogger())
 }
 
-func NewGlogger(skip int, cfg zaplog.LogConfig) *Glogger {
+func NewGlogger(skip int, cfg zaplog.ZapConfig) *Glogger {
 	logger := zaplog.NewZapLogger(skip, cfg)
 
 	//初始化内部类

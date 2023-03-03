@@ -10,7 +10,7 @@ import (
 // ——WriteSyncer
 // ——LogLevel
 
-type LogConfig struct {
+type ZapConfig struct {
 	Level         string `mapstructure:"level" json:"level" yaml:"level"`                            // 级别
 	Prefix        string `mapstructure:"prefix" json:"prefix" yaml:"prefix"`                         // 日志前缀
 	Format        string `mapstructure:"format" json:"format" yaml:"format"`                         // 输出
@@ -23,7 +23,7 @@ type LogConfig struct {
 	LogInConsole bool `mapstructure:"log-in-console" json:"log-in-console" yaml:"log-in-console"` // 输出控制台
 }
 
-func (cfg *LogConfig) GetEncoderConfig() FormatConfig {
+func (cfg *ZapConfig) GetEncoderConfig() FormatConfig {
 	cfgFormat := FormatConfig{
 		Prefix:        cfg.Prefix,
 		StacktraceKey: cfg.StacktraceKey,
@@ -35,7 +35,7 @@ func (cfg *LogConfig) GetEncoderConfig() FormatConfig {
 	return cfgFormat
 }
 
-func (cfg *LogConfig) GetWriterConfig() WriterConfig {
+func (cfg *ZapConfig) GetWriterConfig() WriterConfig {
 	cfgWriter := WriterConfig{
 		FileDir:    cfg.Director,
 		MaxSize:    1,
@@ -48,7 +48,7 @@ func (cfg *LogConfig) GetWriterConfig() WriterConfig {
 
 // ZapEncodeLevel 根据 EncodeLevel 返回 zapcore.LevelEncoder
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (cfg *LogConfig) ZapEncodeLevel() zapcore.LevelEncoder {
+func (cfg *ZapConfig) ZapEncodeLevel() zapcore.LevelEncoder {
 	switch {
 	case cfg.EncodeLevel == "LowercaseLevelEncoder": // 小写编码器(默认)
 		return zapcore.LowercaseLevelEncoder
@@ -65,7 +65,7 @@ func (cfg *LogConfig) ZapEncodeLevel() zapcore.LevelEncoder {
 
 // TransportLevel 根据字符串转化为 zapcore.Level
 // Author [SliverHorn](https://github.com/SliverHorn)
-func (cfg *LogConfig) TransportLevel() zapcore.Level {
+func (cfg *ZapConfig) TransportLevel() zapcore.Level {
 	cfg.Level = strings.ToLower(cfg.Level)
 	switch cfg.Level {
 	case "debug":

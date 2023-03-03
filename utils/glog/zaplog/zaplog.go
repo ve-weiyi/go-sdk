@@ -13,8 +13,8 @@ func GetDefaultZapLogger() *zap.Logger {
 	return _logger
 }
 
-func GetDefaultConfig() LogConfig {
-	return LogConfig{
+func GetDefaultConfig() ZapConfig {
+	return ZapConfig{
 		Level:         "debug",
 		Prefix:        "[Default]",
 		Format:        "json",
@@ -28,7 +28,7 @@ func GetDefaultConfig() LogConfig {
 }
 
 // 默认的zap不需要增加skip
-func NewZapLogger(skip int, cfg LogConfig) *zap.Logger {
+func NewZapLogger(skip int, cfg ZapConfig) *zap.Logger {
 	// 使用了core的NewTee
 	cores := zapcore.NewTee(
 		GetEncoderCore(cfg)...,
@@ -47,7 +47,7 @@ func NewZapLogger(skip int, cfg LogConfig) *zap.Logger {
 	return logger
 }
 
-func GetEncoderCore(cfg LogConfig) []zapcore.Core {
+func GetEncoderCore(cfg ZapConfig) []zapcore.Core {
 
 	cfgFormat := cfg.GetEncoderConfig()
 	cfgWriter := cfg.GetWriterConfig()
@@ -72,7 +72,7 @@ func GetEncoderCore(cfg LogConfig) []zapcore.Core {
 
 // GetCoreSimple 获取Encoder的 zapcore.Core
 // 只分为 info 和 error两个等级
-func GetCoreSimple(cfg LogConfig) []zapcore.Core {
+func GetCoreSimple(cfg ZapConfig) []zapcore.Core {
 	cfgFormat := cfg.GetEncoderConfig()
 	cfgWriter := cfg.GetWriterConfig()
 	//文件打印、json格式
