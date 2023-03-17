@@ -1,17 +1,11 @@
-package convert
+package jsonconv
 
 import (
 	"bytes"
 	"encoding/gob"
 	"errors"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
 	"reflect"
-)
-
-const (
-	Camel = 0 //驼峰
-	Case  = 1 //下划线
 )
 
 /**
@@ -29,37 +23,20 @@ func DeepCopyByGob(src, dst interface{}) error {
  * @Description: 利用json进行深拷贝    obj,&objTo
  */
 func DeepCopyByJson(src, dst any) error {
-	if tmp, err := jsoniter.Marshal(&src); err != nil {
+	if tmp, err := json.Marshal(&src); err != nil {
 		return err
 	} else {
-		err = jsoniter.Unmarshal(tmp, dst)
+		err = json.Unmarshal(tmp, dst)
 		return err
 	}
 }
 
-// 驼峰式json
-func DeepCopyByJsonCamelOrCase(src, dst any, useCamel bool) error {
-	if useCamel {
-		if tmp, err := jsoniter.Marshal(&src); err != nil {
-			return err
-		} else {
-			tmp = []byte(Case2Camel(string(tmp)))
-			err = jsoniter.Unmarshal(tmp, dst)
-			return err
-		}
+/*
+*
+  - @Description: 利用反射进行深拷贝    obj,&objTo
 
-	} else {
-		if tmp, err := jsoniter.Marshal(&src); err != nil {
-			return err
-		} else {
-			tmp = []byte(Camel2Case(string(tmp)))
-			err = jsoniter.Unmarshal(tmp, dst)
-			return err
-		}
-	}
-}
-
-// src->dst 参数传递时，第src使用指针还是实例请自行斟酌，dst必须是指针，涉及的字段必须是对外的
+参数传递时，第src使用指针还是实例请自行斟酌，dst必须是指针，涉及的字段必须是对外的
+*/
 func DeepCopyByReflect(src, dst interface{}) (err error) {
 	// 防止意外panic
 	defer func() {
@@ -107,4 +84,26 @@ func DeepCopyByReflect(src, dst interface{}) (err error) {
 	}
 
 	return nil
+}
+
+// 驼峰式json
+func DeepCopyByJsonCamelOrCase(src, dst any, useCamel bool) error {
+	if useCamel {
+		if tmp, err := json.Marshal(&src); err != nil {
+			return err
+		} else {
+			tmp = []byte(Case2Camel(string(tmp)))
+			err = json.Unmarshal(tmp, dst)
+			return err
+		}
+
+	} else {
+		if tmp, err := json.Marshal(&src); err != nil {
+			return err
+		} else {
+			tmp = []byte(Camel2Case(string(tmp)))
+			err = json.Unmarshal(tmp, dst)
+			return err
+		}
+	}
 }

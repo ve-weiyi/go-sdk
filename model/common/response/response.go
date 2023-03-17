@@ -2,7 +2,7 @@ package response
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ve-weiyi/go-sdk/utils/convert"
+	"github.com/ve-weiyi/go-sdk/utils/jsonconv"
 	"net/http"
 )
 
@@ -25,7 +25,7 @@ func Result(c *gin.Context, code int, msg string, data interface{}) {
 	}
 
 	// 开始时间
-	c.String(http.StatusOK, convert.ObjectToJsonSnake(obj))
+	c.String(http.StatusOK, jsonconv.ObjectToJsonSnake(obj))
 }
 
 func Ok(c *gin.Context) {
