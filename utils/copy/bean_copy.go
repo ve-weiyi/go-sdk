@@ -1,10 +1,12 @@
-package jsonconv
+package copy
 
 import (
 	"bytes"
 	"encoding/gob"
 	"errors"
 	"fmt"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/ve-weiyi/go-sdk/utils/jsonconv"
 	"reflect"
 )
 
@@ -23,10 +25,10 @@ func DeepCopyByGob(src, dst interface{}) error {
  * @Description: 利用json进行深拷贝    obj,&objTo
  */
 func DeepCopyByJson(src, dst any) error {
-	if tmp, err := json.Marshal(&src); err != nil {
+	if tmp, err := jsoniter.Marshal(&src); err != nil {
 		return err
 	} else {
-		err = json.Unmarshal(tmp, dst)
+		err = jsoniter.Unmarshal(tmp, dst)
 		return err
 	}
 }
@@ -89,20 +91,20 @@ func DeepCopyByReflect(src, dst interface{}) (err error) {
 // 驼峰式json
 func DeepCopyByJsonCamelOrCase(src, dst any, useCamel bool) error {
 	if useCamel {
-		if tmp, err := json.Marshal(&src); err != nil {
+		if tmp, err := jsoniter.Marshal(&src); err != nil {
 			return err
 		} else {
-			tmp = []byte(Case2Camel(string(tmp)))
-			err = json.Unmarshal(tmp, dst)
+			tmp = []byte(jsonconv.Case2Camel(string(tmp)))
+			err = jsoniter.Unmarshal(tmp, dst)
 			return err
 		}
 
 	} else {
-		if tmp, err := json.Marshal(&src); err != nil {
+		if tmp, err := jsoniter.Marshal(&src); err != nil {
 			return err
 		} else {
-			tmp = []byte(Camel2Case(string(tmp)))
-			err = json.Unmarshal(tmp, dst)
+			tmp = []byte(jsonconv.Camel2Case(string(tmp)))
+			err = jsoniter.Unmarshal(tmp, dst)
 			return err
 		}
 	}

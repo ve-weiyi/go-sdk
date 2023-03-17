@@ -85,3 +85,24 @@ func OpenExistFile(fileName, filePath string) (*os.File, error) {
 
 	return f, nil
 }
+
+// 向文件中写入内容
+func WriteContentToFile(filename string, content string) {
+	f, err := os.Create(filename)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	l, err := f.WriteString(content)
+	if err != nil {
+		fmt.Println(err)
+		f.Close()
+		return
+	}
+	fmt.Println(l, "bytes written successfully")
+	err = f.Close()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+}
