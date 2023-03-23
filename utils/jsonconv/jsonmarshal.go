@@ -15,7 +15,7 @@ func (c JsonSnakeCase) MarshalJSON() ([]byte, error) {
 	// Regexp definitions
 	var keyMatchRegex = regexp.MustCompile(`\"(\w+)\":`)
 	var wordBarrierRegex = regexp.MustCompile(`(\w)([A-Z])`)
-	marshalled, err := json.Marshal(c.Value)
+	marshalled, err := jjson.Marshal(c.Value)
 	converted := keyMatchRegex.ReplaceAllFunc(
 		marshalled,
 		func(match []byte) []byte {
@@ -35,7 +35,7 @@ type JsonCamelCase struct {
 
 func (c JsonCamelCase) MarshalJSON() ([]byte, error) {
 	var keyMatchRegex = regexp.MustCompile(`\"(\w+)\":`)
-	marshalled, err := json.Marshal(c.Value)
+	marshalled, err := jjson.Marshal(c.Value)
 	converted := keyMatchRegex.ReplaceAllFunc(
 		marshalled,
 		func(match []byte) []byte {
