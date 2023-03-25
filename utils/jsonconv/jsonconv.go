@@ -3,6 +3,7 @@ package jsonconv
 import (
 	"fmt"
 	jsoniter "github.com/json-iterator/go"
+	"strings"
 )
 
 /*
@@ -55,4 +56,12 @@ func ObjectToJsonSnake(data any) string {
 	}
 
 	return string(bytes)
+}
+
+func SprintPrivateValue(data any) string {
+	str := fmt.Sprintf("%+v", data)
+	str = strings.ReplaceAll(str, " ", "\n ")
+	str = strings.ReplaceAll(str, "{", "\n{\n ")
+	str = strings.ReplaceAll(str, "}", "\n}")
+	return str
 }
