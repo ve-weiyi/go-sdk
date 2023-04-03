@@ -3,6 +3,7 @@ package convert
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -35,4 +36,27 @@ func StructToMap(obj interface{}) map[string]interface{} {
 
 func ArrayToString(array []interface{}) string {
 	return strings.Replace(strings.Trim(fmt.Sprint(array), "[]"), " ", ",", -1)
+}
+
+func InferType(str string) (interface{}, error) {
+	// 尝试将字符串解析为int
+	i, err := strconv.Atoi(str)
+	if err == nil {
+		return i, nil
+	}
+
+	// 尝试将字符串解析为float
+	f, err := strconv.ParseFloat(str, 64)
+	if err == nil {
+		return f, nil
+	}
+
+	// 尝试将字符串解析为带引号的string
+	s, err := strconv.Unquote(str)
+	if err == nil {
+		return s, nil
+	}
+
+	// 如果都不匹配，则返回原始字符串
+	return str, nil
 }
