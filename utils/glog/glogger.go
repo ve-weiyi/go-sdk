@@ -120,7 +120,7 @@ func (mlog *Glogger) Debugw(msg string, keysAndValues ...interface{}) {
 	mlog.sugar.Debugw(msg, keysAndValues...)
 }
 
-func (mlog *Glogger) Print(v ...interface{}) {
+func (mlog *Glogger) Println(v ...interface{}) {
 	mlog.checkRotate()
 	mlog.sugar.Info(v...)
 }

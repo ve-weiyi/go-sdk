@@ -42,7 +42,36 @@ func Camel2Case(XxYY string) string {
 func Case2Camel(xx_y_y string) string {
 	XxYY := make([]byte, 0, len(xx_y_y))
 	//是否遇到下划线,初始化值为true则转换第一个字母
-	line := true
+	line := false
+	for _, w := range xx_y_y {
+		//遇到 _
+		if w == '_' {
+			line = true
+			continue
+		}
+		//遇到小写
+		if w >= 'a' && w <= 'z' {
+			if line {
+				w = w - 32
+			}
+		}
+		//遇到大写，跳过
+		if w >= 'A' && w <= 'Z' {
+
+		}
+		//只对 _ 后一个字母生效
+		if line {
+			line = false
+		}
+		XxYY = append(XxYY, byte(w))
+	}
+	return string(XxYY[:])
+}
+
+func Case2CamelNotFirst(xx_y_y string) string {
+	XxYY := make([]byte, 0, len(xx_y_y))
+	//是否遇到下划线,初始化值为true则转换第一个字母
+	line := false
 	for _, w := range xx_y_y {
 		//遇到 _
 		if w == '_' {
