@@ -9,30 +9,31 @@ type MysqlDriver struct {
 }
 
 // GetDB 获取数据库的所有数据库名
-func (s *MysqlDriver) GetDB() (data []Db, err error) {
+func (m *MysqlDriver) GetDB() (data []Db, err error) {
 	var entities []Db
 	sql := "SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;"
-	err = s.DB.Raw(sql).Scan(&entities).Error
+	err = m.DB.Raw(sql).Scan(&entities).Error
 	return entities, err
 }
 
 // GetTables 获取数据库的所有表名
-func (s *MysqlDriver) GetTables(dbName string) (data []Table, err error) {
+func (m *MysqlDriver) GetTables(dbName string) (data []Table, err error) {
 	var entities []Table
 	sql := `select table_name as table_name from information_schema.tables where table_schema = ?`
 
-	err = s.DB.Raw(sql, dbName).Scan(&entities).Error
+	err = m.DB.Raw(sql, dbName).Scan(&entities).Error
 
 	return entities, err
 }
 
 // GetTableColumns  struct
-func (t *MysqlDriver) GetTableColumns(dbName string, tableName string) (data []Column, err error) {
+func (m *MysqlDriver) GetTableColumns(dbName string, tableName string) (data []Column, err error) {
 	var entities []Column
 	var metas []ColumnMetadata
 	var mapType map[string]gorm.ColumnType
 	var mapIndex map[string][]*Index
-	types, err := t.Migrator().ColumnTypes(tableName)
+
+	types, err := m.Migrator().ColumnTypes(tableName)
 	if err != nil {
 		return nil, err
 	}
@@ -41,32 +42,19 @@ func (t *MysqlDriver) GetTableColumns(dbName string, tableName string) (data []C
 		mapType[item.Name()] = item
 	}
 
-	indexes, err := t.Migrator().GetIndexes(tableName)
+	indexes, err := m.Migrator().GetIndexes(tableName)
 	if err != nil {
 		return nil, err
 	}
 	mapIndex = GroupByColumn(indexes)
 
 	sql := `SELECT * FROM INFORMATION_SCHEMA.COLUMNS c WHERE table_name = ? AND table_schema = ?`
-	err = t.DB.Raw(sql, tableName, dbName).Scan(&metas).Error
+	err = m.DB.Raw(sql, tableName, dbName).Scan(&metas).Error
 
 	for _, entity := range metas {
-		var dataTypeLong int
-		switch entity.DataType {
-		case "longtext":
-			dataTypeLong = entity.CharacterMaximumLength
-		case "varchar":
-			dataTypeLong = entity.CharacterMaximumLength
-		case "double":
-			dataTypeLong = entity.NumericPrecision
-		case "decimal":
-			dataTypeLong = entity.NumericPrecision
-		case "tinyint":
-			dataTypeLong = entity.NumericPrecision
-		case "int":
-			dataTypeLong = entity.NumericPrecision
-		default:
-			dataTypeLong = entity.NumericPrecision + entity.CharacterMaximumLength
+		var dataTypeLong int64
+		if lentgh, ok := mapType[entity.ColumnName].Length(); ok {
+			dataTypeLong = lentgh
 		}
 		//log.Println(jsonconv.ObjectToJsonIndent(entity))
 		col := Column{
@@ -88,4 +76,25 @@ func (t *MysqlDriver) GetTableColumns(dbName string, tableName string) (data []C
 	}
 
 	return entities, nil
+}
+
+// GroupByColumn group columns
+func GroupByColumn(indexList []gorm.Index) map[string][]*Index {
+	columnIndexMap := make(map[string][]*Index, len(indexList))
+	if len(indexList) == 0 {
+		return columnIndexMap
+	}
+
+	for _, idx := range indexList {
+		if idx == nil {
+			continue
+		}
+		for i, col := range idx.Columns() {
+			columnIndexMap[col] = append(columnIndexMap[col], &Index{
+				Index:    idx,
+				Priority: int32(i + 1),
+			})
+		}
+	}
+	return columnIndexMap
 }

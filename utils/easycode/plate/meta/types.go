@@ -1,4 +1,4 @@
-package logic
+package meta
 
 import (
 	"bytes"
@@ -31,18 +31,28 @@ type astInjectionMeta struct {
 	elementName    string
 }
 
-type TempMeta struct {
-	//easycode.TplMeta
-	//Template         *template.Template
-	//Key              string
-	TemplateString   string //模版文件内容
-	TemplatePath     string //模版文件路径   tpl/api.go.tpl
-	AutoPackage      string //包名    blog
-	AutoCodePath     string //生成的代码路径  blog/api/article.go
-	AutoMoveFilePath string //需要移动 AutoCodePath ->AutoMoveFilePath
+type IMeta interface {
+	CreateTempFile() error
+	GetName() string
 }
 
-func (tempMeta *TempMeta) CreateTempFile(tempData interface{}) error {
+// 生成目录，文件名，模板内容，填充数据 data
+type PlateMeta struct {
+	Key              string
+	OutFileName      string
+	AutoCodePath     string //生成的代码路径  blog/api/article.go
+	AutoCodeMovePath string //需要移动 AutoCodePath ->AutoCodeMovePath
+
+	TemplateString string      //模版文件内容
+	TemplatePath   string      //模版文件路径   tpl/api.go.tpl
+	Data           interface{} //填充内容
+}
+
+func (tempMeta *PlateMeta) GetName() string {
+	return tempMeta.Key
+}
+
+func (tempMeta *PlateMeta) CreateTempFile() error {
 	//创建文件夹
 	err := os.MkdirAll(filepath.Dir(tempMeta.AutoCodePath), 0755)
 	if err != nil {
@@ -62,7 +72,7 @@ func (tempMeta *TempMeta) CreateTempFile(tempData interface{}) error {
 	}
 
 	var buf bytes.Buffer
-	err = temp.Execute(&buf, tempData)
+	err = temp.Execute(&buf, tempMeta.Data)
 	if err != nil {
 		return err
 	}
@@ -74,22 +84,22 @@ func (tempMeta *TempMeta) CreateTempFile(tempData interface{}) error {
 	return nil
 }
 
-func (tempMeta *TempMeta) MoveTempFile() error {
+func (tempMeta *PlateMeta) MoveTempFile() error {
 	//判断目标文件是否都可以移动
-	if tempMeta.AutoMoveFilePath != "" {
-		if FileExist(tempMeta.AutoMoveFilePath) {
-			return errors.New(fmt.Sprintf("目标文件已存在:%s\n", tempMeta.AutoMoveFilePath))
+	if tempMeta.AutoCodeMovePath != "" {
+		if fileExist(tempMeta.AutoCodeMovePath) {
+			return errors.New(fmt.Sprintf("目标文件已存在:%s\n", tempMeta.AutoCodeMovePath))
 		}
 
-		if err := FileMove(tempMeta.AutoCodePath, tempMeta.AutoMoveFilePath); err != nil {
+		if err := fileMove(tempMeta.AutoCodePath, tempMeta.AutoCodeMovePath); err != nil {
 			return err
 		}
-		log.Println("file move success:", tempMeta.AutoMoveFilePath)
+		log.Println("file move success:", tempMeta.AutoCodeMovePath)
 	}
 	return nil
 }
 
-func (tempMeta *TempMeta) getTemplate() (*template.Template, error) {
+func (tempMeta *PlateMeta) getTemplate() (*template.Template, error) {
 	if tempMeta.TemplatePath != "" {
 		//解析模板
 		temp, err := template.ParseFiles(tempMeta.TemplatePath)

@@ -42,7 +42,7 @@ func GetTableIndex(t *gorm.DB, schemaName string, tableName string) (indexes []g
 	return t.Migrator().GetIndexes(tableName)
 }
 
-func GetColumnMeta(db *gorm.DB, dbName string, tableName string) (data []ColumnMetadata, err error) {
+func GetColumnMeta(t *gorm.DB, dbName string, tableName string) (data []ColumnMetadata, err error) {
 	var metas []ColumnMetadata
 	sql := `
 	SELECT *
@@ -50,28 +50,7 @@ func GetColumnMeta(db *gorm.DB, dbName string, tableName string) (data []ColumnM
 	WHERE table_name = ?
 	  AND table_schema = ?
 	`
-	err = db.Raw(sql, tableName, dbName).Scan(&metas).Error
+	err = t.Raw(sql, tableName, dbName).Scan(&metas).Error
 
 	return metas, err
-}
-
-// GroupByColumn group columns
-func GroupByColumn(indexList []gorm.Index) map[string][]*Index {
-	columnIndexMap := make(map[string][]*Index, len(indexList))
-	if len(indexList) == 0 {
-		return columnIndexMap
-	}
-
-	for _, idx := range indexList {
-		if idx == nil {
-			continue
-		}
-		for i, col := range idx.Columns() {
-			columnIndexMap[col] = append(columnIndexMap[col], &Index{
-				Index:    idx,
-				Priority: int32(i + 1),
-			})
-		}
-	}
-	return columnIndexMap
 }

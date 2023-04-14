@@ -1,4 +1,4 @@
-package logic
+package meta
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-// FileExist 判断文件是否存在
-func FileExist(path string) bool {
+// fileExist 判断文件是否存在
+func fileExist(path string) bool {
 	fi, err := os.Lstat(path)
 	if err == nil {
 		return !fi.IsDir()
@@ -18,7 +18,7 @@ func FileExist(path string) bool {
 	return !os.IsNotExist(err)
 }
 
-func FileMove(src string, dst string) (err error) {
+func fileMove(src string, dst string) (err error) {
 	if dst == "" {
 		return nil
 	}
@@ -68,3 +68,18 @@ func output(fileName string, content []byte) error {
 	}
 	return os.WriteFile(fileName, result, 0640)
 }
+
+// ConvertStructs convert to base structures
+//func ConvertStructMetas(structs ...interface{}) (metas []*IMeta, err error) {
+//	for _, st := range structs {
+//		if st == nil {
+//			continue
+//		}
+//		if base, ok := st.(*IMeta); ok {
+//			metas = append(metas, base)
+//			continue
+//		}
+//
+//	}
+//	return
+//}

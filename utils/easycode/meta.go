@@ -1,15 +1,11 @@
-package quickcode
+package easycode
 
 import (
-	"fmt"
-	"github.com/ve-weiyi/go-sdk/utils/quickcode/provider"
-	"gorm.io/gorm"
-	"path/filepath"
-	"strings"
+	"github.com/ve-weiyi/go-sdk/utils/easycode/provider"
 )
 
-// AutoCodeStruct 初始版本自动化代码工具
-type AutoCodeStruct struct {
+// AutoCodeStructData 初始版本自动化代码工具
+type AutoCodeStructData struct {
 	FileName           string
 	TableName          string            `json:"tableName"`          // 表名 				auto_code
 	StructName         string            `json:"structName"`         // Struct名称 		AutoCode 大写驼峰命名
@@ -28,29 +24,4 @@ type AutoCodeStruct struct {
 	NeedValid          bool     `json:"-"`
 	NeedSort           bool     `json:"-"`
 	ProjectName        string   `json:"-"`
-}
-
-type Config struct {
-	db *gorm.DB
-
-	OutPath string // 输出路径
-	OutFile string // 输出文件名称
-
-}
-
-func (cfg *Config) Revise() (err error) {
-	cfg.OutPath, err = filepath.Abs(cfg.OutPath)
-	if err != nil {
-		return fmt.Errorf("outpath is invalid: %w", err)
-	}
-	if cfg.OutPath == "" {
-		cfg.OutPath = "./query/"
-	}
-	if cfg.OutFile == "" {
-		cfg.OutFile = cfg.OutPath + "/gen.go"
-	} else if !strings.Contains(cfg.OutFile, "/") {
-		cfg.OutFile = cfg.OutPath + "/" + cfg.OutFile
-	}
-
-	return nil
 }

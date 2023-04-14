@@ -30,7 +30,3 @@ type {{.StructName}} struct {
 }
 
 `
-const Request = `
-
-}
-`

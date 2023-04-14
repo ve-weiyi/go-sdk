@@ -1,6 +1,8 @@
 package provider
 
-import "strings"
+import (
+	"strings"
+)
 
 var (
 	defaultDataType             = "string"
@@ -54,4 +56,9 @@ func (m dataTypeMap) Get(dataType, detailType string) string {
 		return convert(detailType)
 	}
 	return defaultDataType
+}
+
+// GetDataType get data type
+func GetDataType(columnType, detailType string) (fieldtype string) {
+	return dataType.Get(columnType, detailType)
 }
