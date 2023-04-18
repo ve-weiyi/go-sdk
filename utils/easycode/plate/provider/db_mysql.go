@@ -11,7 +11,7 @@ type MysqlDriver struct {
 // GetDB 获取数据库的所有数据库名
 func (m *MysqlDriver) GetDB() (data []Db, err error) {
 	var entities []Db
-	sql := "SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;"
+	sql := "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;"
 	err = m.DB.Raw(sql).Scan(&entities).Error
 	return entities, err
 }
@@ -19,8 +19,7 @@ func (m *MysqlDriver) GetDB() (data []Db, err error) {
 // GetTables 获取数据库的所有表名
 func (m *MysqlDriver) GetTables(dbName string) (data []Table, err error) {
 	var entities []Table
-	sql := `select table_name as table_name from information_schema.tables where table_schema = ?`
-
+	sql := `select * from information_schema.tables where table_schema = ?`
 	err = m.DB.Raw(sql, dbName).Scan(&entities).Error
 
 	return entities, err
@@ -29,7 +28,9 @@ func (m *MysqlDriver) GetTables(dbName string) (data []Table, err error) {
 // GetTableColumns  struct
 func (m *MysqlDriver) GetTableColumns(dbName string, tableName string) (data []Column, err error) {
 	var entities []Column
-	var metas []ColumnMetadata
+	//var metas []ColumnMetadata
+	//sql := `SELECT * FROM INFORMATION_SCHEMA.COLUMNS c WHERE table_schema = ? AND table_name = ?`
+	//err = m.DB.Raw(sql,dbName, tableName).Scan(&metas).Error
 	var mapType map[string]gorm.ColumnType
 	var mapIndex map[string][]*Index
 
@@ -48,30 +49,22 @@ func (m *MysqlDriver) GetTableColumns(dbName string, tableName string) (data []C
 	}
 	mapIndex = GroupByColumn(indexes)
 
-	sql := `SELECT * FROM INFORMATION_SCHEMA.COLUMNS c WHERE table_name = ? AND table_schema = ?`
-	err = m.DB.Raw(sql, tableName, dbName).Scan(&metas).Error
-
-	for _, entity := range metas {
-		var dataTypeLong int64
-		if lentgh, ok := mapType[entity.ColumnName].Length(); ok {
-			dataTypeLong = lentgh
-		}
-		//log.Println(jsonconv.ObjectToJsonIndent(entity))
+	for _, entity := range types {
 		col := Column{
-			columnType:      mapType[entity.ColumnName],
-			Indexes:         mapIndex[entity.ColumnName],
-			ColumnName:      entity.ColumnName,
-			ColumnType:      entity.ColumnType,
-			ColumnDefault:   entity.ColumnDefault,
-			ColumnComment:   entity.ColumnComment,
-			DataType:        entity.DataType,
-			DataTypeLong:    dataTypeLong,
-			IsNullable:      entity.IsNullable == "YES",
-			IsPrimaryKey:    entity.ColumnKey == "PRI",
-			IsUnique:        entity.ColumnKey == "UNI",
-			IsAutoIncrement: entity.Extra == "auto_increment",
-			dataTypeMap:     nil,
+			columnType: entity,
+			Indexes:    mapIndex[entity.Name()],
+			ColumnName: entity.Name(),
 		}
+
+		col.ColumnType, _ = entity.ColumnType()
+		col.ColumnDefault, _ = entity.DefaultValue()
+		col.ColumnComment, _ = entity.Comment()
+		col.DataType = entity.DatabaseTypeName()
+		col.DataTypeLong, _ = entity.Length()
+		col.IsNullable, _ = entity.Nullable()
+		col.IsPrimaryKey, _ = entity.PrimaryKey()
+		col.IsUnique, _ = entity.Unique()
+		col.IsAutoIncrement, _ = entity.AutoIncrement()
 		entities = append(entities, col)
 	}
 

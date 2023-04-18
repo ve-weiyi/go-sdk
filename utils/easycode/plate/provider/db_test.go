@@ -49,10 +49,10 @@ func TestDBService(t *testing.T) {
 	}
 	log.Println("tabelList-->", jsonconv.ObjectToJsonIndent(tabelList))
 
-	//columnList, err := driver.GetTableColumns("blog-plus", "article")
-	//if err != nil {
-	//	log.Println("-->", err)
-	//	return
-	//}
-	//log.Println("columnList-->", jsonconv.ObjectToJsonIndent(columnList))
+	columnList, err := driver.GetTableColumns("blog-plus", "article")
+	if err != nil {
+		log.Println("-->", err)
+		return
+	}
+	log.Println("columnList-->", jsonconv.ObjectToJsonIndent(columnList))
 }

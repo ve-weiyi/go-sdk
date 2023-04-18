@@ -2,7 +2,7 @@ package easycode
 
 import (
 	"fmt"
-	"github.com/ve-weiyi/go-sdk/utils/easycode/plate/meta"
+	"github.com/ve-weiyi/go-sdk/utils/easycode/plate"
 	"gorm.io/gorm"
 	"log"
 	"os"
@@ -12,7 +12,7 @@ type Generator struct {
 	Config
 	*log.Logger
 
-	plateMetas  map[string]meta.PlateMeta
+	plateMetas  map[string]plate.PlateMeta
 	InjectMetas interface{}
 }
 

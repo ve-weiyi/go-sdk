@@ -1,4 +1,4 @@
-package provider
+package helper
 
 import (
 	"strings"
@@ -52,13 +52,18 @@ type dataTypeMapping func(detailType string) (finalType string)
 type dataTypeMap map[string]dataTypeMapping
 
 func (m dataTypeMap) Get(dataType, detailType string) string {
+	//先判断varchar，再判断 varchar(11)
 	if convert, ok := m[strings.ToLower(dataType)]; ok {
 		return convert(detailType)
 	}
 	return defaultDataType
 }
 
-// GetDataType get data type
+//func (cfg *Config) WithDataTypeMap(newMap map[string]func(detailType string) (dataType string)) {
+//	cfg.dataTypeMap = newMap
+//}
+
+// GetDataType get data type   varchar  varchar(11)
 func GetDataType(columnType, detailType string) (fieldtype string) {
 	return dataType.Get(columnType, detailType)
 }

@@ -1,4 +1,4 @@
-package meta
+package plate
 
 import (
 	"fmt"
@@ -68,18 +68,3 @@ func output(fileName string, content []byte) error {
 	}
 	return os.WriteFile(fileName, result, 0640)
 }
-
-// ConvertStructs convert to base structures
-//func ConvertStructMetas(structs ...interface{}) (metas []*IMeta, err error) {
-//	for _, st := range structs {
-//		if st == nil {
-//			continue
-//		}
-//		if base, ok := st.(*IMeta); ok {
-//			metas = append(metas, base)
-//			continue
-//		}
-//
-//	}
-//	return
-//}

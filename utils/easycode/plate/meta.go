@@ -1,4 +1,4 @@
-package meta
+package plate
 
 import (
 	"bytes"
@@ -10,32 +10,6 @@ import (
 	"text/template"
 )
 
-type autoPackage struct {
-	path       string
-	tempString string
-	name       string
-}
-
-type injectionMeta struct {
-	path       string //文件路径
-	funcName   string //插入的位置
-	injectCode string //注入的代码
-}
-
-type astInjectionMeta struct {
-	path           string
-	packageAlias   string //导入别名
-	packageImport  string
-	findStructName string //在 struct findStructName{ //插入 elementAlias  packageAlias.elementName  }
-	elementAlias   string
-	elementName    string
-}
-
-type IMeta interface {
-	CreateTempFile() error
-	GetName() string
-}
-
 // 生成目录，文件名，模板内容，填充数据 data
 type PlateMeta struct {
 	Key              string
@@ -46,10 +20,6 @@ type PlateMeta struct {
 	TemplateString string      //模版文件内容
 	TemplatePath   string      //模版文件路径   tpl/api.go.tpl
 	Data           interface{} //填充内容
-}
-
-func (tempMeta *PlateMeta) GetName() string {
-	return tempMeta.Key
 }
 
 func (tempMeta *PlateMeta) CreateTempFile() error {

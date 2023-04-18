@@ -2,6 +2,8 @@ package easycode
 
 import (
 	"fmt"
+	"github.com/ve-weiyi/go-sdk/utils/easycode/plate"
+	"github.com/ve-weiyi/go-sdk/utils/easycode/plate/tmpl"
 	"gorm.io/gorm"
 	"path/filepath"
 	"strings"
@@ -29,4 +31,29 @@ func (cfg *Config) Revise() (err error) {
 	}
 
 	return nil
+}
+
+// ConvertStructs convert to base structures
+func (cfg *Config) ConvertStructMetas(structs ...interface{}) (metas []*plate.PlateMeta, err error) {
+	for _, st := range structs {
+		if st == nil {
+			continue
+		}
+		if base, ok := st.(*plate.PlateMeta); ok {
+			metas = append(metas, base)
+			continue
+		}
+
+		meta := &plate.PlateMeta{
+			Key:              "",
+			OutFileName:      cfg.OutFile,
+			AutoCodePath:     cfg.OutPath,
+			AutoCodeMovePath: cfg.OutFile,
+			TemplateString:   tmpl.Model,
+			TemplatePath:     "",
+			Data:             nil,
+		}
+		metas = append(metas, meta)
+	}
+	return
 }
