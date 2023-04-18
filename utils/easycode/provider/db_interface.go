@@ -4,18 +4,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type Database interface {
+type DBDriver interface {
 	GetDB() (data []Db, err error)
 	GetTables(dbName string) (data []Table, err error)
-	GetTableColumn(dbName string, tableName string) (data []Column, err error)
+	GetTableColumns(dbName string, tableName string) (data []Column, err error)
 }
 
 type Db struct {
-	Database string `json:"database" gorm:"column:database"`
+	SchemaName string `json:"schemaName" gorm:"column:SCHEMA_NAME"`
 }
 
 type Table struct {
-	TableName string `json:"tableName" gorm:"column:table_name"`
+	TableName    string `json:"tableName" gorm:"column:TABLE_NAME"`
+	TableComment string `json:"tableComment" gorm:"column:TABLE_COMMENT"`
 }
 
 // 需要的数据
