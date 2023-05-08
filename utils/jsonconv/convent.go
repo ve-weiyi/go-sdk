@@ -1,6 +1,7 @@
 package jsonconv
 
 import (
+	"strings"
 	"unicode"
 )
 
@@ -17,6 +18,11 @@ func Camel2Case(XxYY string) string {
 	xx_y_y := make([]byte, 0)
 
 	for i, w := range XxYY {
+		//遇到非字母
+		if !unicode.IsLetter(w) {
+			xx_y_y = append(xx_y_y, byte('_'))
+			continue
+		}
 		//如果是大写
 		if unicode.IsUpper(w) {
 
@@ -42,10 +48,10 @@ func Camel2Case(XxYY string) string {
 func Case2Camel(xx_y_y string) string {
 	XxYY := make([]byte, 0, len(xx_y_y))
 	//是否遇到下划线,初始化值为true则转换第一个字母
-	line := false
+	line := true
 	for _, w := range xx_y_y {
 		//遇到 _
-		if w == '_' {
+		if !unicode.IsLetter(w) {
 			line = true
 			continue
 		}
@@ -69,32 +75,8 @@ func Case2Camel(xx_y_y string) string {
 }
 
 func Case2CamelNotFirst(xx_y_y string) string {
-	XxYY := make([]byte, 0, len(xx_y_y))
-	//是否遇到下划线,初始化值为true则转换第一个字母
-	line := false
-	for _, w := range xx_y_y {
-		//遇到 _
-		if w == '_' {
-			line = true
-			continue
-		}
-		//遇到小写
-		if w >= 'a' && w <= 'z' {
-			if line {
-				w = w - 32
-			}
-		}
-		//遇到大写，跳过
-		if w >= 'A' && w <= 'Z' {
-
-		}
-		//只对 _ 后一个字母生效
-		if line {
-			line = false
-		}
-		XxYY = append(XxYY, byte(w))
-	}
-	return string(XxYY[:])
+	str := Case2Camel(xx_y_y)
+	return strings.ToLower(str[:1]) + str[1:]
 }
 
 // 首字母大写

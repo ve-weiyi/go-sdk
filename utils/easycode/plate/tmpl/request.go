@@ -1,6 +1,0 @@
-package tmpl
-
-const Request = `
-
-}
-`
