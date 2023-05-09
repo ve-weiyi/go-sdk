@@ -46,6 +46,10 @@ func Camel2Case(XxYY string) string {
  * @return xxYY
  **/
 func Case2Camel(xx_y_y string) string {
+	//id类型转换大写
+	if xx_y_y == "id" {
+		return "ID"
+	}
 	XxYY := make([]byte, 0, len(xx_y_y))
 	//是否遇到下划线,初始化值为true则转换第一个字母
 	line := true
