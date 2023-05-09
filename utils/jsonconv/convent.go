@@ -43,7 +43,7 @@ func Camel2Case(XxYY string) string {
  * @description xx_yy to XxYx  xx_y_y to XxYY  XxYY to XxYY
  * @date 2023/2/15
  * @param xx_y_y
- * @return xxYY
+ * @return XxYY
  **/
 func Case2Camel(xx_y_y string) string {
 	//id类型转换大写
@@ -78,6 +78,13 @@ func Case2Camel(xx_y_y string) string {
 	return string(XxYY[:])
 }
 
+/**
+ * 下划线转驼峰
+ * @description xx_yy to XxYx  xx_y_y to XxYY  XxYY to XxYY
+ * @date 2023/2/15
+ * @param xx_y_y
+ * @return xxYY
+ **/
 func Case2CamelNotFirst(xx_y_y string) string {
 	str := Case2Camel(xx_y_y)
 	return strings.ToLower(str[:1]) + str[1:]

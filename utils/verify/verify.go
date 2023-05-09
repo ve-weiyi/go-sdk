@@ -9,8 +9,8 @@ var (
 	RegisterVerify         = Rules{"Username": {NotEmpty()}, "NickName": {NotEmpty()}, "Password": {NotEmpty()}, "AuthorityId": {NotEmpty()}}
 	PageInfoVerify         = Rules{"Page": {NotEmpty()}, "PageSize": {NotEmpty()}}
 	CustomerVerify         = Rules{"CustomerName": {NotEmpty()}, "CustomerPhoneData": {NotEmpty()}}
-	AutoCodeVerify         = Rules{"CamelName": {NotEmpty()}, "StructName": {NotEmpty()}, "CamelName": {NotEmpty()}, "Fields": {NotEmpty()}}
-	AutoPackageVerify      = Rules{"CamelName": {NotEmpty()}}
+	AutoCodeVerify         = Rules{"ValueName": {NotEmpty()}, "StructName": {NotEmpty()}, "ValueName": {NotEmpty()}, "Fields": {NotEmpty()}}
+	AutoPackageVerify      = Rules{"ValueName": {NotEmpty()}}
 	AuthorityVerify        = Rules{"AuthorityId": {NotEmpty()}, "AuthorityName": {NotEmpty()}}
 	AuthorityIdVerify      = Rules{"AuthorityId": {NotEmpty()}}
 	OldAuthorityVerify     = Rules{"OldAuthorityId": {NotEmpty()}}
