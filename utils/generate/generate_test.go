@@ -11,7 +11,7 @@ import (
 )
 
 // GEN 自动生成 GORM 模型结构体文件及使用示例 https://blog.csdn.net/Jeffid/article/details/126898000
-const dsn = "root:mysql7914@(127.0.0.1:3306)/INFORMATION_SCHEMA?charset=utf8mb4&parseTime=True&loc=Local"
+const dsn = "root:mysql7914@(127.0.0.1:3306)/blog-v2?charset=utf8mb4&parseTime=True&loc=Local"
 
 var db *gorm.DB
 
@@ -99,7 +99,7 @@ func TestGenerator(t *testing.T) {
 	// 创建全部模型文件, 并覆盖前面创建的同名模型
 	//g.ApplyBasic(g.GenerateAllTable(fieldOpts...)...)
 
-	g.ApplyBasic(g.GenerateModel("COLUMNS", fieldOpts...))
+	g.ApplyBasic(g.GenerateModel("user_account", fieldOpts...))
 	g.Execute()
 }
 
