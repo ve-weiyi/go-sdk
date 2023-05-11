@@ -1,6 +1,7 @@
 package generate
 
 import (
+	"encoding/json"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
@@ -30,6 +31,14 @@ func init() {
 	}
 	log.Println("mysql connection done")
 }
+
+func TestIndex(t *testing.T) {
+	tableName := "user_account"
+	index, _ := db.Migrator().GetIndexes(tableName)
+	js, _ := json.MarshalIndent(&index, "", " ")
+	log.Println("111--->", string(js))
+}
+
 func TestGenerator(t *testing.T) {
 
 	path := "./blog"
