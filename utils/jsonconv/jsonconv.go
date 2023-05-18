@@ -58,6 +58,26 @@ func ObjectToJsonSnake(data any) string {
 	return string(bytes)
 }
 
+// 转下划线json
+func ObjectToJsonSnakeIdent(data any) string {
+	bytes, err := jjson.MarshalIndent(JsonSnakeCase{Value: data}, "", " ")
+	if err != nil {
+		return ""
+	}
+
+	return string(bytes)
+}
+
+// 转首字母驼峰json
+func ObjectToJsonCamel(data any) string {
+	bytes, err := jjson.Marshal(JsonCamelCase{Value: data})
+	if err != nil {
+		return ""
+	}
+
+	return string(bytes)
+}
+
 func SprintPrivateValue(data any) string {
 	str := fmt.Sprintf("%+v", data)
 	str = strings.ReplaceAll(str, " ", "\n ")

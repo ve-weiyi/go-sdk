@@ -56,3 +56,36 @@ func TestMarshalToString(t *testing.T) {
 	jj := ObjectToJson(order)
 	fmt.Println("jsonStr:", jj)
 }
+
+func TestUnmarshalJSONIgnoreCase(t *testing.T) {
+	data := []byte(`{
+        "first_name": "John",
+        "last_name": "Doe",
+        "age": 30
+    }`)
+	type Person struct {
+		FirstName string
+		LastName  string
+		Age       int
+	}
+
+	var p Person
+
+	if err := UnmarshalJSONIgnoreCase(data, &p); err != nil {
+		t.Errorf("UnmarshalJSONIgnoreCase() error = %v", err)
+	}
+
+	if p.FirstName != "John" {
+		t.Errorf("UnmarshalJSONIgnoreCase() error: FirstName = %v, want John", p.FirstName)
+	}
+
+	if p.LastName != "Doe" {
+		t.Errorf("UnmarshalJSONIgnoreCase() error: LastName = %v, want Doe", p.LastName)
+	}
+
+	if p.Age != 30 {
+		t.Errorf("UnmarshalJSONIgnoreCase() error: Age = %v, want 30", p.Age)
+	}
+
+	log.Println("--", p)
+}
