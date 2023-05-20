@@ -11,7 +11,7 @@ import (
 )
 
 /**
- * @ChineseName: 利用gob进行深拷贝
+ * @StructComment: 利用gob进行深拷贝
  */
 func DeepCopyByGob(src, dst interface{}) error {
 	var buffer bytes.Buffer
@@ -22,7 +22,7 @@ func DeepCopyByGob(src, dst interface{}) error {
 }
 
 /**
- * @ChineseName: 利用json进行深拷贝    obj,&objTo
+ * @StructComment: 利用json进行深拷贝    obj,&objTo
  */
 func DeepCopyByJson(src, dst any) error {
 	if tmp, err := jsoniter.Marshal(&src); err != nil {
@@ -35,7 +35,7 @@ func DeepCopyByJson(src, dst any) error {
 
 /*
 *
-  - @ChineseName: 利用反射进行深拷贝    obj,&objTo
+  - @StructComment: 利用反射进行深拷贝    obj,&objTo
 
 参数传递时，第src使用指针还是实例请自行斟酌，dst必须是指针，涉及的字段必须是对外的
 */

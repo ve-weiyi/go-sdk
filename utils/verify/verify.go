@@ -2,7 +2,7 @@ package verify
 
 var (
 	IdVerify               = Rules{"ID": []string{NotEmpty()}}
-	ApiVerify              = Rules{"Path": {NotEmpty()}, "ChineseName": {NotEmpty()}, "ApiGroup": {NotEmpty()}, "Method": {NotEmpty()}}
+	ApiVerify              = Rules{"Path": {NotEmpty()}, "StructComment": {NotEmpty()}, "ApiGroup": {NotEmpty()}, "Method": {NotEmpty()}}
 	MenuVerify             = Rules{"Path": {NotEmpty()}, "ParentId": {NotEmpty()}, "Name": {NotEmpty()}, "Component": {NotEmpty()}, "Sort": {Ge("0")}}
 	MenuMetaVerify         = Rules{"Title": {NotEmpty()}}
 	LoginVerify            = Rules{"CaptchaId": {NotEmpty()}, "Captcha": {NotEmpty()}, "Username": {NotEmpty()}, "Password": {NotEmpty()}}
