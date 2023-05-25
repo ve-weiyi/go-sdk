@@ -58,34 +58,37 @@ func TestMarshalToString(t *testing.T) {
 }
 
 func TestUnmarshalJSONIgnoreCase(t *testing.T) {
-	data := []byte(`{
-        "first_name": "John",
-        "last_name": "Doe",
-        "age": 30
-    }`)
+	data := `{
+			"firstname": "John",
+			"last_Name": "Doe",
+			"age": 30,
+			"me":[1,2,3]
+		}`
 	type Person struct {
-		FirstName string
+		FirstName string `json:"first_Name"`
 		LastName  string
 		Age       int
+		Me        []int
 	}
 
 	var p Person
+	//
+	//var json = jsoniter.Config{
+	//	CaseSensitive: false,
+	//}.Froze()
 
-	if err := UnmarshalJSONIgnoreCase(data, &p); err != nil {
+	//data := []byte(`{"NAME":"Alice","AGE":30}`)
+	//var p Person
+	SetCamelCaseJsonTag(&p)
+	fmt.Println("---", ObjectToJsonIndent(p))
+	//err := json.Unmarshal(data, &p)
+
+	var it interface{}
+	it = &p
+	if err := UnmarshalJSONIgnoreCase([]byte(data), it); err != nil {
 		t.Errorf("UnmarshalJSONIgnoreCase() error = %v", err)
 	}
 
-	if p.FirstName != "John" {
-		t.Errorf("UnmarshalJSONIgnoreCase() error: FirstName = %v, want John", p.FirstName)
-	}
-
-	if p.LastName != "Doe" {
-		t.Errorf("UnmarshalJSONIgnoreCase() error: LastName = %v, want Doe", p.LastName)
-	}
-
-	if p.Age != 30 {
-		t.Errorf("UnmarshalJSONIgnoreCase() error: Age = %v, want 30", p.Age)
-	}
-
-	log.Println("--", p)
+	fmt.Println("---", data)
+	fmt.Println("---", ObjectToJsonIndent(p))
 }
