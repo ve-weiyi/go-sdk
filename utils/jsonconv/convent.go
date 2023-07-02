@@ -88,7 +88,8 @@ func Case2Camel(xx_y_y string) string {
 		XxYY = append(XxYY, byte(w))
 	}
 
-	out := strings.ReplaceAll(string(XxYY), "Id", "ID")
+	//out := strings.ReplaceAll(string(XxYY), "Id", "ID")
+	out := string(XxYY)
 	return out
 }
 

@@ -27,7 +27,8 @@ func init() {
 	//- `ObjectFieldMustBeSimpleString`：设置是否要求对象类型的字段必须是简单字符串，默认为 false。
 	//- `CaseSensitive`：设置是否大小写敏感，默认为 true。
 	jjson = jsoniter.Config{
-		CaseSensitive: false,
+		CaseSensitive:           false,
+		MarshalFloatWith6Digits: false,
 	}.Froze()
 }
 

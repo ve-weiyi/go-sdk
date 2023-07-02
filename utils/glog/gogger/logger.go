@@ -34,7 +34,7 @@ func (w *gormWriter) Printf(message string, data ...interface{}) {
 	data[0] = FileWithLineNum()
 	if logZap {
 		w.Writer.Printf(message, data...)
-		//global.GVA_LOG.Info(fmt.Sprintf(message, data...))
+		//global.LOG.Info(fmt.Sprintf(message, data...))
 	} else {
 		w.Writer.Printf(message, data...)
 	}

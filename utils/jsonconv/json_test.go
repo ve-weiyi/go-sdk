@@ -92,3 +92,7 @@ func TestUnmarshalJSONIgnoreCase(t *testing.T) {
 	fmt.Println("---", data)
 	fmt.Println("---", ObjectToJsonIndent(p))
 }
+
+func TestUnmarshalJSON(t *testing.T) {
+
+}
