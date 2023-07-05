@@ -134,8 +134,8 @@ func (mlog *Glogger) GetUnderlyingLogger() *zap.Logger {
 	return mlog.log
 }
 
-func (mlog *Glogger) Json(v ...interface{}) {
+func (mlog *Glogger) JsonIndent(v ...interface{}) {
 	mlog.checkRotate()
-	bytes, _ := json.Marshal(v)
-	mlog.sugar.Info(string(bytes))
+	bytes, _ := json.MarshalIndent(v, "", " ")
+	mlog.sugar.Info("--->", string(bytes))
 }

@@ -56,3 +56,39 @@ func TestMarshalToString(t *testing.T) {
 	jj := ObjectToJson(order)
 	fmt.Println("jsonStr:", jj)
 }
+
+func TestUnmarshalJSONIgnoreCase(t *testing.T) {
+	data := `{
+			"firstname": "John",
+			"last_Name": "Doe",
+			"age": 30,
+			"me":[1,2,3]
+		}`
+	type Person struct {
+		FirstName string `json:"first_Name"`
+		LastName  string
+		Age       int
+		Me        []int
+	}
+
+	var p Person
+	//
+	//var json = jsoniter.Config{
+	//	CaseSensitive: false,
+	//}.Froze()
+
+	//data := []byte(`{"NAME":"Alice","AGE":30}`)
+	//var p Person
+	SetCamelCaseJsonTag(&p)
+	fmt.Println("---", ObjectToJsonIndent(p))
+	//err := json.Unmarshal(data, &p)
+
+	var it interface{}
+	it = &p
+	if err := UnmarshalJSONIgnoreCase([]byte(data), it); err != nil {
+		t.Errorf("UnmarshalJSONIgnoreCase() error = %v", err)
+	}
+
+	fmt.Println("---", data)
+	fmt.Println("---", ObjectToJsonIndent(p))
+}

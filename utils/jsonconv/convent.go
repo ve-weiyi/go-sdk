@@ -18,6 +18,11 @@ func Camel2Case(XxYY string) string {
 	xx_y_y := make([]byte, 0)
 
 	for i, w := range XxYY {
+		//遇到数字
+		if unicode.IsDigit(w) {
+			xx_y_y = append(xx_y_y, byte(w))
+			continue
+		}
 		//遇到非字母
 		if !unicode.IsLetter(w) {
 			xx_y_y = append(xx_y_y, byte('_'))
@@ -54,11 +59,18 @@ func Case2Camel(xx_y_y string) string {
 	//是否遇到下划线,初始化值为true则转换第一个字母
 	line := true
 	for _, w := range xx_y_y {
+		//遇到数字
+		if unicode.IsDigit(w) {
+			XxYY = append(XxYY, byte(w))
+			continue
+		}
+
 		//遇到 _
 		if !unicode.IsLetter(w) {
 			line = true
 			continue
 		}
+
 		//遇到小写
 		if w >= 'a' && w <= 'z' {
 			if line {
