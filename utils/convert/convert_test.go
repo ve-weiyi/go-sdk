@@ -2,15 +2,16 @@ package convert
 
 import (
 	"fmt"
-	"github.com/ve-weiyi/go-sdk/utils/jsonconv"
 	"log"
 	"path"
 	"strings"
 	"testing"
+
+	"github.com/ve-weiyi/go-sdk/utils/jsonconv"
 )
 
 func TestString(t *testing.T) {
-	addImportCode := "hello  github.com/ve-weiyi/ve-admin-store/server/api/v1/test"
+	addImportCode := "hello  github.com/ve-weiyi/ve-blog-golang/server/api/v1/test"
 	var (
 		importAlias   string
 		importPackage string
