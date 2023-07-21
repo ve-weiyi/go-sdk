@@ -10,29 +10,57 @@ const (
 	Case  = 1 //下划线
 )
 
+var ignoreKey = map[string]string{
+	"ID":  "id",
+	"URL": "url",
+}
+
 /**
  * 驼峰式写法转为下划线写法
- * @description xx_yy to XxYx  xx_y_y to XxYY  XxYY to XxYY
+ * @description XxYx to xx_yy  XxYY to xx_y_y XxYY to XxYY
  **/
 func Camel2Case(XxYY string) string {
 	xx_y_y := make([]byte, 0)
+	i := 0
 
-	for i, w := range XxYY {
-		//遇到数字
+	for i < len(XxYY) {
+		// 检查是否存在 ignoreKey 的前缀
+		found := false
+		for prefix, replace := range ignoreKey {
+			if strings.HasPrefix(XxYY[i:], prefix) {
+				// 非首个字符
+				if len(xx_y_y) != 0 {
+					xx_y_y = append(xx_y_y, '_')
+				}
+				xx_y_y = append(xx_y_y, []byte(replace)...)
+				i += len(prefix)
+				found = true
+				break
+			}
+		}
+
+		if found {
+			continue
+		}
+
+		// 未找到 ignoreKey 的前缀，进行正常转换
+		w := rune(XxYY[i])
+		i++
+		// 遇到数字
 		if unicode.IsDigit(w) {
 			xx_y_y = append(xx_y_y, byte(w))
 			continue
 		}
-		//遇到非字母
+		// 遇到非字母
 		if !unicode.IsLetter(w) {
 			xx_y_y = append(xx_y_y, byte('_'))
 			continue
 		}
-		//如果是大写
+		// 如果是大写
 		if unicode.IsUpper(w) {
 
-			//非首个字符
-			if i != 0 {
+			// 非首个字符
+			if len(xx_y_y) != 0 {
 				xx_y_y = append(xx_y_y, '_')
 			}
 			xx_y_y = append(xx_y_y, byte(unicode.ToLower(w)))
@@ -40,7 +68,8 @@ func Camel2Case(XxYY string) string {
 			xx_y_y = append(xx_y_y, byte(w))
 		}
 	}
-	return string(xx_y_y[:])
+
+	return string(xx_y_y)
 }
 
 /**

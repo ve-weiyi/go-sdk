@@ -1,9 +1,10 @@
-package file
+package files
 
 import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -47,4 +48,13 @@ func CreateDir(dirs ...string) (err error) {
 		}
 	}
 	return err
+}
+
+// 深度遍历目录下的所有文件，包括目录和文件
+func VisitFile(root string, visitFile func(path string, f os.FileInfo, err error) error) {
+	err := filepath.Walk(root, visitFile)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 }
